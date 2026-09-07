@@ -1,0 +1,6 @@
+# Ignorar pasta de documentos (PDFs e arquivos locais)
+documentos/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
