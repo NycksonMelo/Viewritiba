@@ -1,5 +1,7 @@
 # Ignorar pasta de documentos (PDFs e arquivos locais)
 documentos/
+crud_organizador/home/organizador_novo.css
+
 
 # Arquivos de sistema
 .DS_Store
