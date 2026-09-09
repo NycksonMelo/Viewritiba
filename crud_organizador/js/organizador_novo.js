@@ -39,5 +39,6 @@ async function novo() {
         alert("Sucesso: " + resposta.mensagem);
     } else {
         alert("Erro: " + resposta.mensagem);
+        
     }
 }
