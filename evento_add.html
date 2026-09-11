@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Evento - Viewritiba</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="eventos.css">
+</head>
+<body>
+    <header class="page-header">
+        <div class="header-content">
+            <h1>Viewritiba</h1>
+            <p>Adicionar Evento</p>
+        </div>
+    </header>
+
+    <main class="page-main">
+        <section class="form-container">
+            <div class="form-header">
+                <h2>Novo Evento</h2>
+                <p>Cadastre um evento com dados e imagem.</p>
+            </div>
+
+            <button type="button" id="btn_voltar">← Voltar</button>
+
+            <form id="formForum" style="margin-top: 1.25rem;">
+                <div class="input-group">
+                    <label for="new_nome">Nome do evento</label>
+                    <input type="text" id="new_nome" placeholder="Insira um texto...">
+                </div>
+
+                <div class="input-group">
+                    <label for="new_desc">Sobre o evento</label>
+                    <textarea id="new_desc" placeholder="Insira um texto..." rows="5"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="new_date">Data do evento</label>
+                    <input type="date" id="new_date">
+                </div>
+
+                <div class="input-group">
+                    <input type="file" accept="image/*" id="new_img">
+                    <label for="new_img" class="file-upload-label">Inserir imagem</label>
+                </div>
+
+                <button type="submit" id="btn_enviar">Enviar</button>
+            </form>
+
+            <form id="forum_post"></form>
+        </section>
+    </main>
+
+<script src="js/evento_add.js"></script>
+</body>
+</html>
