@@ -5,19 +5,19 @@ header("Content-Type: application/json; charset=utf-8");
 
 include_once("conexao.php");
 
-$email = trim($_POST['email'] ?? '');
+$identificador = trim($_POST['email'] ?? '');
 $senha = $_POST['senha'] ?? '';
 
-if ($email === '' || $senha === '') {
+if ($identificador === '' || $senha === '') {
     echo json_encode([
         'status' => 'erro',
-        'mensagem' => 'Informe o e-mail e a senha.'
+        'mensagem' => 'Informe o e-mail/CPF e a senha.'
     ]);
     exit;
 }
 
-$stmt = $conexao->prepare("SELECT id, nome, email, senha FROM organizador WHERE email = ?");
-$stmt->bind_param("s", $email);
+$stmt = $conexao->prepare("SELECT id, nome, email, senha FROM organizador WHERE email = ? OR documento = ?");
+$stmt->bind_param("ss", $identificador, $identificador);
 $stmt->execute();
 $resultado = $stmt->get_result();
 $organizador = $resultado->fetch_assoc();

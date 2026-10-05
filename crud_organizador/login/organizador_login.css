@@ -1,8 +1,7 @@
 /* ==========================================================================
-   Variáveis e Paleta de Cores (Viewritiba)
+   Variáveis e Paleta de Cores (Viewritiba - Login)
    ========================================================================== */
 :root {
-   
     --bg-fundo: #F7F5F2; 
     --bg-header: #2B2B2B; 
     --bg-form: #FFFFFF; 
@@ -94,7 +93,7 @@ body {
 .form-container {
     background-color: var(--bg-form);
     width: 100%;
-    max-width: 540px; 
+    max-width: 440px; 
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg); 
     padding: 2.5rem;
@@ -110,6 +109,13 @@ body {
 .form-header h2 {
     font-size: 1.875rem;
     color: var(--cor-texto);
+    font-weight: 700;
+}
+
+.form-header p {
+    color: var(--cor-texto-mutado);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
 }
 
 /* ==========================================================================
@@ -121,13 +127,6 @@ body {
     gap: 1.25rem; 
 }
 
-
-.input-row {
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 1rem;
-}
-
 .input-group {
     display: flex;
     flex-direction: column; 
@@ -137,6 +136,7 @@ body {
 .input-group label {
     font-size: 0.875rem;
     font-weight: 600;
+    color: var(--cor-texto);
 }
 
 .input-group input {
@@ -146,6 +146,8 @@ body {
     border-radius: var(--radius-md);
     background-color: #F9FAFB; 
     transition: all 0.2s ease-in-out; 
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
 }
 
 .input-group input:focus {
@@ -166,13 +168,14 @@ body {
     width: 100%;
     padding: 0.875rem 1.5rem;
     background-color: var(--cor-destaque);
-    color: var(--cor-texto);
+    color: var(--bg-form);
     border: none;
     border-radius: var(--radius-md);
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: var(--font-sans);
 }
 
 .btn-primary:hover {
@@ -186,49 +189,37 @@ body {
 }
 
 /* ==========================================================================
-   Links Secundários
+   Rodapé do Formulário
    ========================================================================== */
 .form-footer {
     text-align: center;
     margin-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid #F3F4F6;
 }
 
-.login-prompt {
-    font-size: 0.9rem;
+.form-footer p {
+    font-size: 0.875rem;
     color: var(--cor-texto-mutado);
+    margin-bottom: 0.25rem;
 }
 
-.login-link {
+.signup-link {
     color: var(--cor-destaque);
-    text-decoration: none;
+    text-decoration: none; 
+    font-size: 0.9rem;
     font-weight: 600;
     transition: color 0.2s;
 }
 
-.login-link:hover {
+.signup-link:hover {
     color: var(--cor-destaque-hover);
-    text-decoration: underline;
-}
-
-.cancel-link {
-    color: var(--cor-texto-mutado);
-    text-decoration: none; 
-    font-size: 0.875rem;
-}
-
-.cancel-link:hover {
-    color: var(--cor-texto);
     text-decoration: underline;
 }
 
 /* ==========================================================================
    Animações Keyframes
    ========================================================================== */
-
 @keyframes slideUpFade {
     0% {
         opacity: 0;
@@ -241,15 +232,10 @@ body {
 }
 
 /* ==========================================================================
-   Responsividade (Para Celulares)
+   Responsividade
    ========================================================================== */
 @media (max-width: 640px) {
-    .input-row {
-        grid-template-columns: 1fr; 
-    }
-    
     .form-container {
-        padding: 1.5rem; 
+        padding: 1.75rem 1.25rem; 
     }
-}
 }

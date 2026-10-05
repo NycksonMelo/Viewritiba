@@ -1,11 +1,82 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viewritiba</title>
+    <title>Painel Viewritiba</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .home-card {
+            background: #fff;
+            max-width: 600px;
+            margin: 4rem auto;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .home-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-primary {
+            background-color: var(--cor-destaque, #FF7A59);
+            color: #fff;
+        }
+
+        .btn-action-primary:hover {
+            background-color: var(--cor-destaque-hover, #E86A4C);
+        }
+
+        .btn-action-secondary {
+            background-color: #2B2B2B;
+            color: #fff;
+        }
+
+        .btn-action-secondary:hover {
+            background-color: #404040;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Bem-vindo ao Viewritiba</h1>
+    <header class="page-header">
+        <div class="header-content">
+            <h1>Viewritiba</h1>
+            <p>Plataforma de Eventos</p>
+        </div>
+    </header>
+
+    <main class="page-main">
+        <div class="home-card">
+            <h2>Bem-vindo ao Viewritiba</h2>
+            <p style="margin-top: 0.75rem; color: #6B7280;">Acesse sua área de organizador para gerenciar seus eventos e perfil.</p>
+
+            <div class="home-actions">
+                <a href="../login/Login.html" class="btn-action btn-action-primary">Fazer Login</a>
+                <a href="organizador_novo.html" class="btn-action btn-action-secondary">Cadastrar Organizador</a>
+                <a href="perfil_organizador.html" class="btn-action btn-action-secondary">Meu Perfil</a>
+            </div>
+        </div>
+    </main>
 </body>
+
 </html>

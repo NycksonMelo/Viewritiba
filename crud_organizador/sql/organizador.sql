@@ -9,6 +9,7 @@ CREATE TABLE organizador (
   documento varchar(20) NOT NULL,
   email varchar(100) NOT NULL,
   telefone varchar(20) NOT NULL,
+  bio text DEFAULT NULL,
   senha varchar(255) NOT NULL,
   
   PRIMARY KEY (id),
