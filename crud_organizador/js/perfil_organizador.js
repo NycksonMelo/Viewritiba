@@ -1,166 +1,161 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const formPerfil = document.getElementById('formPerfil');
-    const nomeInput = document.getElementById('nome');
-    const bioInput = document.getElementById('bio');
-    const emailInput = document.getElementById('email');
-    const telefoneInput = document.getElementById('telefone');
-    const documentoInput = document.getElementById('documento');
-    const novaSenhaInput = document.getElementById('nova_senha');
-    const confirmaNovaSenhaInput = document.getElementById('confirma_nova_senha');
-    
-    const displayName = document.getElementById('displayName');
-    const displayBio = document.getElementById('displayBio');
+    // Referências aos elementos do DOM
+    const perfilNome = document.getElementById('perfilNome');
+    const avatarInicial = document.getElementById('avatarInicial');
+    const avatarImg = document.getElementById('avatarImg');
+    const donoActions = document.getElementById('donoActions');
+    const statTotalEventos = document.getElementById('statTotalEventos');
 
-    async function carregarDados() {
+    const bioContainer = document.getElementById('bioContainer');
+    const perfilBio = document.getElementById('perfilBio');
+
+    const itemEmail = document.getElementById('itemEmail');
+    const perfilEmail = document.getElementById('perfilEmail');
+
+    const itemTelefone = document.getElementById('itemTelefone');
+    const perfilTelefone = document.getElementById('perfilTelefone');
+
+    const itemDocumento = document.getElementById('itemDocumento');
+    const perfilDocumento = document.getElementById('perfilDocumento');
+
+    const gridEventos = document.getElementById('gridEventos');
+    const emptyEventos = document.getElementById('emptyEventos');
+    const linkLogin = document.getElementById('linkLogin');
+
+    /**
+     * Formata data para exibição no card de evento
+     */
+    function formatarDataCurta(dataStr) {
+        if (!dataStr) return '';
         try {
-            const res = await fetch('../php/perfil_organizador_get.php');
-            const data = await res.json();
-
-            if (data.status === 'sucesso') {
-                const info = data.data;
-                nomeInput.value = info.nome || '';
-                bioInput.value = info.bio || '';
-                emailInput.value = info.email || '';
-                telefoneInput.value = info.telefone || '';
-                documentoInput.value = info.documento || '';
-
-                displayName.textContent = info.nome || 'Organizador';
-                displayBio.textContent = info.bio || 'Gerencie seus eventos e personalize suas informações no Viewritiba.';
-            } else {
-                alert('Acesso restrito. Por favor, faça login para acessar seu perfil.');
-                window.location.href = '../login/Login.html';
-            }
-        } catch (error) {
-            console.error('Erro ao buscar dados do perfil:', error);
-            alert('Não foi possível carregar os dados do perfil. Verifique sua conexão.');
+            const d = new Date(dataStr.replace(' ', 'T'));
+            if (isNaN(d.getTime())) return dataStr;
+            const dia = String(d.getDate()).padStart(2, '0');
+            const mes = d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '').toUpperCase();
+            return `${dia} ${mes}`;
+        } catch (e) {
+            return '';
         }
     }
 
-    await carregarDados();
+    /**
+     * Carrega as informações reais do organizador a partir do banco de dados
+     */
+    async function carregarPerfil() {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idParam = urlParams.get('id');
+            const url = idParam 
+                ? `../php/perfil_organizador_get.php?id=${encodeURIComponent(idParam)}`
+                : '../php/perfil_organizador_get.php';
 
-    const fileAvatar = document.getElementById('fileAvatar');
-    const avatarImage = document.getElementById('avatarImage');
+            const res = await fetch(url);
+            const resposta = await res.json();
 
-    if (fileAvatar && avatarImage) {
-        fileAvatar.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    avatarImage.src = event.target.result;
-                    showToast('Foto de perfil pré-visualizada!');
-                };
-                reader.readAsDataURL(e.target.files[0]);
-            }
-        });
-    }
-
-    if (formPerfil) {
-        formPerfil.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const nome = nomeInput.value.trim();
-            const email = emailInput.value.trim();
-            const telefone = telefoneInput.value.trim();
-            const bio = bioInput.value.trim();
-            const novaSenha = novaSenhaInput.value;
-            const confirmaNovaSenha = confirmaNovaSenhaInput.value;
-
-            if (!nome || !email || !telefone) {
-                alert('Preencha os campos obrigatórios (Nome, E-mail e Telefone).');
+            if (resposta.status !== 'sucesso') {
+                // Redireciona para o login caso não esteja autenticado
+                window.location.href = '../login/Login.html';
                 return;
             }
 
-            if (novaSenha || confirmaNovaSenha) {
-                if (novaSenha.length < 6) {
-                    alert('A nova senha deve ter no mínimo 6 caracteres.');
-                    return;
-                }
-                if (novaSenha !== confirmaNovaSenha) {
-                    alert('A nova senha e a confirmação não coincidem.');
-                    return;
-                }
+            const org = resposta.organizador || resposta.data;
+            const eventos = resposta.eventos || [];
+            const isDono = Boolean(resposta.is_dono);
+
+            // Nome e Inicial do Avatar
+            const nomeOrganizador = org.nome || 'Organizador';
+            if (perfilNome) perfilNome.textContent = nomeOrganizador;
+            if (avatarInicial) {
+                avatarInicial.textContent = nomeOrganizador.trim().charAt(0).toUpperCase();
             }
 
-            const fd = new FormData();
-            fd.append('nome', nome);
-            fd.append('bio', bio);
-            fd.append('email', email);
-            fd.append('telefone', telefone);
-            if (novaSenha) {
-                fd.append('nova_senha', novaSenha);
+            // Exibição de ações do dono (Editar Perfil / Criar Evento)
+            if (isDono) {
+                if (donoActions) donoActions.classList.remove('hidden');
+                if (linkLogin) linkLogin.classList.add('hidden'); // Já está logado
+            } else {
+                if (donoActions) donoActions.classList.add('hidden');
             }
 
-            try {
-                const res = await fetch('../php/perfil_organizador_update.php', {
-                    method: 'POST',
-                    body: fd
-                });
-                const result = await res.json();
-
-                if (result.status === 'sucesso') {
-                    showToast(result.mensagem);
-                    displayName.textContent = nome || 'Organizador';
-                    displayBio.textContent = bio || 'Gerencie seus eventos e personalize suas informações no Viewritiba.';
-                    novaSenhaInput.value = '';
-                    confirmaNovaSenhaInput.value = '';
-                } else {
-                    alert('Erro: ' + result.mensagem);
-                }
-            } catch (error) {
-                console.error('Erro na atualização:', error);
-                alert('Erro ao atualizar o perfil. Tente novamente.');
+            // Total de Eventos Criados
+            if (statTotalEventos) {
+                statTotalEventos.textContent = eventos.length;
             }
-        });
-    }
 
-    const modalConfirmarExclusao = document.getElementById('modalConfirmarExclusao');
-    const btnAbrirModalExcluir = document.getElementById('btnAbrirModalExcluir');
-    const btnFecharModalExcluir = document.getElementById('btnFecharModalExcluir');
-    const btnCancelarExclusao = document.getElementById('btnCancelarExclusao');
-    const btnConfirmarExclusaoFinal = document.getElementById('btnConfirmarExclusaoFinal');
-    const backdropExcluir = document.getElementById('backdropExcluir');
+            // Biografia (Exibe apenas se preenchida no banco)
+            if (org.bio && org.bio.trim() !== '') {
+                if (perfilBio) perfilBio.textContent = org.bio.trim();
+                if (bioContainer) bioContainer.classList.remove('hidden');
+            } else {
+                if (bioContainer) bioContainer.classList.add('hidden');
+            }
 
-    if (btnAbrirModalExcluir && modalConfirmarExclusao) {
-        btnAbrirModalExcluir.addEventListener('click', () => modalConfirmarExclusao.classList.remove('hidden'));
-        if (btnFecharModalExcluir) btnFecharModalExcluir.addEventListener('click', () => modalConfirmarExclusao.classList.add('hidden'));
-        if (btnCancelarExclusao) btnCancelarExclusao.addEventListener('click', () => modalConfirmarExclusao.classList.add('hidden'));
-        if (backdropExcluir) backdropExcluir.addEventListener('click', () => modalConfirmarExclusao.classList.add('hidden'));
+            // E-mail
+            if (org.email && org.email.trim() !== '') {
+                if (perfilEmail) perfilEmail.textContent = org.email.trim();
+                if (itemEmail) itemEmail.classList.remove('hidden');
+            }
 
-        if (btnConfirmarExclusaoFinal) {
-            btnConfirmarExclusaoFinal.addEventListener('click', async () => {
-                try {
-                    const res = await fetch('../php/perfil_organizador_excluir.php', {
-                        method: 'POST'
-                    });
-                    const result = await res.json();
+            // Telefone
+            if (org.telefone && org.telefone.trim() !== '') {
+                if (perfilTelefone) perfilTelefone.textContent = org.telefone.trim();
+                if (itemTelefone) itemTelefone.classList.remove('hidden');
+            }
 
-                    if (result.status === 'sucesso') {
-                        modalConfirmarExclusao.classList.add('hidden');
-                        alert('Conta excluída com sucesso. Você será redirecionado para a tela de login.');
-                        window.location.href = '../login/Login.html';
-                    } else {
-                        alert('Erro ao excluir conta: ' + result.mensagem);
-                    }
-                } catch (error) {
-                    console.error('Erro na exclusão:', error);
-                    alert('Não foi possível processar a exclusão da conta.');
-                }
-            });
+            // Documento
+            if (org.documento && org.documento.trim() !== '') {
+                if (perfilDocumento) perfilDocumento.textContent = org.documento.trim();
+                if (itemDocumento) itemDocumento.classList.remove('hidden');
+            }
+
+            // Renderizar Grade de Eventos
+            renderizarEventos(eventos);
+
+        } catch (erro) {
+            console.error('Erro ao buscar perfil do organizador:', erro);
+            window.location.href = '../login/Login.html';
         }
     }
 
-    const toastNotification = document.getElementById('toastNotification');
-    const toastMessage = document.getElementById('toastMessage');
-    let toastTimeout;
+    /**
+     * Renderiza os cards de eventos criados pelo organizador
+     */
+    function renderizarEventos(eventos) {
+        if (!gridEventos) return;
 
-    function showToast(msg) {
-        if (!toastNotification || !toastMessage) return;
-        toastMessage.textContent = msg;
-        toastNotification.classList.remove('hidden');
+        gridEventos.innerHTML = '';
 
-        clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => {
-            toastNotification.classList.add('hidden');
-        }, 3500);
+        if (!eventos || eventos.length === 0) {
+            gridEventos.classList.add('hidden');
+            if (emptyEventos) emptyEventos.classList.remove('hidden');
+            return;
+        }
+
+        gridEventos.classList.remove('hidden');
+        if (emptyEventos) emptyEventos.classList.add('hidden');
+
+        eventos.forEach(evt => {
+            const card = document.createElement('a');
+            card.className = 'ig-event-card';
+            card.href = `../../crud_evento/home/visualizar_evento.html?id=${evt.id}`;
+            card.title = evt.titulo || 'Evento';
+
+            const dataFormatada = formatarDataCurta(evt.data_hora);
+            const local = evt.local || 'Curitiba';
+
+            card.innerHTML = `
+                <div class="ig-event-cover">
+                    ${dataFormatada ? `<span class="ig-event-date-tag">${dataFormatada}</span>` : ''}
+                    <div class="ig-event-info">
+                        <h4 class="ig-event-title">${evt.titulo || 'Evento'}</h4>
+                        <p class="ig-event-local">${local}</p>
+                    </div>
+                </div>
+            `;
+
+            gridEventos.appendChild(card);
+        });
     }
+
+    await carregarPerfil();
 });
