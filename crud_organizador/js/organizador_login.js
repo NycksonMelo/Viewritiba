@@ -11,7 +11,7 @@ document.getElementById("formLogin").addEventListener("submit", async function (
 		const resposta = await retorno.json();
 
 		if (resposta.status === "sucesso") {
-			window.location.href = "../home/index.html";
+			window.location.href = "../home/perfil_organizador.html";
 			return;
 		}
 
