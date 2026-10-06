@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Evento</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Domine:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../crud_comentarios/home/comentarios.css">
+</head>
+<body>
+    <header class="page-header">
+        <div class="header-content">
+            <h1>Viewritiba</h1>
+            <a href="#">Home</a>
+            <a href="../../crud_evento/home/index.html">Eventos</a>
+            <a href="../../favoritos/favoritos.html">Favoritos</a>
+            <p>Comentários do evento</p>
+            <a href="#" onclick="deslogar()">Sair</a>
+        </div>
+    </header>
+    <main class="page-main">
+        <section class="comments-shell">
+            <div class="comments-header">
+                <button type="button" id="btn_voltar" class="btn-primary">← Voltar</button>
+                <div>
+                    <h2>Comentários</h2>
+                </div>
+            </div>
+            <div id="elementos_tela" class="comentarios-lista" aria-live="polite"></div>
+            <div class="composer">
+                <div class="composer-header">
+                    <h3>Deixe seu comentário</h3>
+                </div>
+                <div class="composer-row">
+                    <textarea id="new_comentario" rows="4" placeholder="Insira um texto..."></textarea>
+                </div>
+                <div class="composer-actions">
+                    <div class="input-group select-group">
+                        <label for="new_nota">Nota</label>
+                        <select id="new_nota" required>
+                            <option value="">-</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <button type="button" id="btn_comentario" class="btn-primary">Enviar</button>
+                </div>
+            </div>
+            <button type="button" id="btn_topo" class="btn-primary btn-topo">↑</button>
+        </section>
+    </main>
+    <script src="../../crud_comentarios/js/comentarios.js"></script>
+    <script src="../js/valida_sessao.js?"></script>
+</body>
+</html>
