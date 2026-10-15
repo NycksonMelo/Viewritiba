@@ -4,30 +4,19 @@ document.addEventListener("DOMContentLoaded", () => {
 document.getElementById("novo").addEventListener("click", () => {
     window.location.href = 'evento_novo.html';
 });
-document.getElementById("logoff").addEventListener("click", () => {
-    logoff();
-});
 document.getElementById("buscar").addEventListener("click", () => {
     pesquisar();
 });
-async function logoff() {
-    const retorno = await fetch("/projeto/php/evento_logoff.php");
-    const resposta = await retorno.json();
-
-    console.log(resposta);
-
-    if (resposta.status == "ok") {
-        window.location.replace("/projeto/login/index.html");
-    }
-}
 async function buscar(){
     const retorno = await fetch("../php/evento_get.php");
     const resposta = await retorno.json();
-    if(resposta.status == "ok"){
+    if (retorno.status === 401) {
+        window.location.replace("../../crud_organizador/login/Login.html");
+    } else if(resposta.status == "ok"){
         preencherTabela(resposta.data);    
     } else {
         document.getElementById("lista").innerHTML =
-            "<p>Nenhum evento cadastrado.</p>";
+            "<p>Você ainda não cadastrou eventos.</p>";
     }
 }
 async function pesquisar() {
@@ -36,7 +25,9 @@ async function pesquisar() {
         "../php/evento_get.php?titulo=" + encodeURIComponent(titulo)
     );
     const resposta = await retorno.json();
-    if (resposta.status == "ok") {
+    if (retorno.status === 401) {
+        window.location.replace("../../crud_organizador/login/Login.html");
+    } else if (resposta.status == "ok") {
         preencherTabela(resposta.data);
     } else {
         document.getElementById("lista").innerHTML =
@@ -64,7 +55,7 @@ function preencherTabela(tabela){
                 <th> Descrição </th>
                 <th> Data e Hora </th>
                 <th> Local </th>
-                <th> ID Organizador </th>
+                <th> Ações </th>
             </tr>
     `;
     for(var i=0;i<tabela.length;i++){
@@ -74,7 +65,6 @@ function preencherTabela(tabela){
                 <td>${tabela[i].descricao}</td>
                 <td>${tabela[i].data_hora}</td>
                 <td>${tabela[i].local}</td>
-                 <td>${tabela[i].id_organizador}</td>
                 <td>
                     <a href='evento_alterar.html?id=${tabela[i].id}'>Alterar</a>
                     <a href='#' onclick='excluir(${tabela[i].id})'>Excluir</a>
@@ -85,4 +75,3 @@ function preencherTabela(tabela){
     html += '</table>';
     document.getElementById("lista").innerHTML = html;
 }
-

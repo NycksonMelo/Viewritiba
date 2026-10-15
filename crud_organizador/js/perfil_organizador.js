@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // Renderizar Grade de Eventos
-            renderizarEventos(eventos);
+            renderizarEventos(eventos, resposta.eventos_erro);
 
         } catch (erro) {
             console.error('Erro ao buscar perfil do organizador:', erro);
@@ -120,14 +120,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     /**
      * Renderiza os cards de eventos criados pelo organizador
      */
-    function renderizarEventos(eventos) {
+    function renderizarEventos(eventos, houveErro = false) {
         if (!gridEventos) return;
 
         gridEventos.innerHTML = '';
 
         if (!eventos || eventos.length === 0) {
             gridEventos.classList.add('hidden');
-            if (emptyEventos) emptyEventos.classList.remove('hidden');
+            if (emptyEventos) {
+                emptyEventos.textContent = houveErro
+                    ? 'Não foi possível carregar os eventos.'
+                    : 'Nenhum evento criado ainda.';
+                emptyEventos.classList.remove('hidden');
+            }
             return;
         }
 

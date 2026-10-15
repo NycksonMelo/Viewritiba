@@ -14,7 +14,7 @@ async function buscar(id){
         document.getElementById("data_hora").value =
                 registro.data_hora.replace(" ", "T").substring(0, 16);
         document.getElementById("local").value = registro.local;
-        document.getElementById("id_organizador").value = registro.id_organizador;        document.getElementById("id").value = id;
+        document.getElementById("id").value = id;
     }else{
         alert("ERRO:" + resposta.mensagem);
         window.location.href = "../home/";
@@ -28,14 +28,12 @@ async function alterar(){
     var descricao = document.getElementById("descricao").value;
     var data_hora   = document.getElementById("data_hora").value;
     var local   = document.getElementById("local").value;
-    var id_organizador  = document.getElementById("id_organizador").value;
     var id  = document.getElementById("id").value;
     const fd = new FormData();
     fd.append("titulo", titulo);
     fd.append("descricao", descricao);
     fd.append("data_hora", data_hora);
     fd.append("local", local);
-    fd.append("id_organizador", id_organizador);
     const retorno = await fetch("../php/evento_alterar.php?id="+id, {
           method: 'POST',
           body: fd  
