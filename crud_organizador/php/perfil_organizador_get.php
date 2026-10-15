@@ -42,14 +42,19 @@ if (!$is_dono && !empty($organizador['documento'])) {
 
 // 2. Busca os eventos criados por este organizador na tabela evento
 $eventos = [];
-$stmtEvt = $conexao->prepare("
-    SELECT id, titulo, descricao, data_hora, local 
-    FROM evento 
-    WHERE id_organizador = ? 
-    ORDER BY data_hora DESC
-");
+$eventos_erro = false;
 
-if ($stmtEvt) {
+try {
+    $stmtEvt = $conexao->prepare("
+        SELECT id, titulo, descricao, data_hora, local
+        FROM evento
+        WHERE id_organizador = ?
+        ORDER BY data_hora DESC
+    ");
+    if (!$stmtEvt) {
+        throw new RuntimeException($conexao->error);
+    }
+
     $stmtEvt->bind_param("i", $id_alvo);
     $stmtEvt->execute();
     $resEvt = $stmtEvt->get_result();
@@ -57,6 +62,9 @@ if ($stmtEvt) {
         $eventos[] = $linha;
     }
     $stmtEvt->close();
+} catch (mysqli_sql_exception | RuntimeException $erro) {
+    error_log("Erro ao buscar eventos do organizador: " . $erro->getMessage());
+    $eventos_erro = true;
 }
 
 $conexao->close();
@@ -68,6 +76,7 @@ echo json_encode([
     'organizador' => $organizador,
     'data' => $organizador, // Compatibilidade retroativa
     'total_eventos' => count($eventos),
-    'eventos' => $eventos
+    'eventos' => $eventos,
+    'eventos_erro' => $eventos_erro
 ]);
 ?>

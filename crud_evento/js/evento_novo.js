@@ -1,8 +1,17 @@
-document.addEventListener("DOMContentLoaded", () => {
-});
-document.getElementById("enviar").addEventListener("click", () => {
+document.getElementById("formEvento").addEventListener("submit", (evento) => {
+    evento.preventDefault();
     novo();
 });
+
+
+async function novo() {
+    const form = document.getElementById("formEvento");
+    const fd = new FormData(form);
+    const retorno = await fetch("../php/evento_novo.php", {
+        method: "POST",
+        body: fd
+    });
+=======
 async function novo(){
     var titulo    = document.getElementById("titulo").value.trim;
     var descricao = document.getElementById("descricao").value.trim;
@@ -30,11 +39,19 @@ async function novo(){
           method: 'POST',
           body: fd  
         });
+
     const resposta = await retorno.json();
-    if(resposta.status == "ok"){
-        alert("SUCESSO: " + resposta.mensagem);
-        window.location.href = "../home/";
-    }else{
-        alert("ERRO: " + resposta.mensagem);
+
+    if (retorno.status === 401) {
+        window.location.href = "../../crud_organizador/login/Login.html";
+        return;
     }
+
+    if (resposta.status === "ok") {
+        alert(resposta.mensagem);
+        window.location.href = "../../crud_organizador/home/perfil_organizador.html";
+        return;
+    }
+
+    alert("Erro: " + resposta.mensagem);
 }

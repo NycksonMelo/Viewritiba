@@ -1,36 +1,39 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viewritiba</title>
+    <title>Meus eventos | Viewritiba</title>
     <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body>
     <header class="page-header">
         <div class="header-content">
-            <h1>Viewritiba</h1>
-
-            <button id="logoff" class="btn-outline">
-                Sair
-            </button>
+            <a href="../../crud_organizador/home/painel.html" class="brand-link">
+                <h1>Viewritiba</h1>
+            </a>
+            <nav class="header-nav" aria-label="Navegação principal">
+                <a href="../../crud_organizador/home/painel.html" class="nav-link">Início</a>
+                <a href="../../crud_organizador/home/perfil_organizador.html" class="nav-link">Meu perfil</a>
+            </nav>
         </div>
     </header>
     <main class="container">
         <section class="search-section">
             <div class="search-header">
-                <h2>Encontre eventos em Curitiba!</h2>
-                <p>
-                    Pesquise eventos, descubra novas experiências
-                    e encontre atividades de acordo com seus interesses.
-                </p>
+                <h2>Seus eventos</h2>
+                <p>Consulte, pesquise e gerencie os eventos cadastrados na sua conta.</p>
             </div>
             <div class="search-area">
                 <input
                     type="text"
                     id="pesquisa"
-                    placeholder="Digite o nome do evento"
+                    aria-label="Pesquisar evento pelo título"
+                    placeholder="Pesquisar pelo título"
                 >
+
+                <button id="buscar" type="button" class="btn-primary">Buscar</button>
+=======
                 <button id="buscar">
                     Buscar
                 </button>
@@ -38,10 +41,11 @@
                 <button id="filtro_apagar" type="button">
                     Limpar filtros
                 </button>
+
             </div>
             <div class="actions">
-                <button id="novo" class="btn-primary">
-                    + Cadastrar Evento
+                <button id="novo" type="button" class="btn-primary">
+                    + Novo evento
                 </button>
             </div>
         </section>
@@ -54,7 +58,7 @@
             <div id="lista"></div>
         </section>
     </main>
-    <script src="../js/index.js"></script>
-    <script src="../js/valida_sessao.js"></script>
+    <script src="../js/index.js?v=3"></script>
+    <script src="../js/valida_sessao.js?v=2"></script>
 </body>
 </html>
