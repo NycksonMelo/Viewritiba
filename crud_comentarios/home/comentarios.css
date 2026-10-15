@@ -1,0 +1,290 @@
+/* ==========================================================================
+   Variáveis e Paleta de Cores (Viewritiba)
+   ========================================================================== */
+:root {
+    --bg-fundo: #F7F5F2;
+    --bg-header: #2B2B2B;
+    --bg-form: #FFFFFF;
+    --bg-card: #FFFDFB;
+    --bg-header-mutado: #6B7280;
+    --cor-destaque: #FF7A59;
+    --cor-destaque-hover: #E86A4C;
+    --branco-btn: #fdfdfd;
+    --borda: #E5E7EB;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.08);
+    --shadow-focus: 0 0 0 4px rgba(255, 122, 89, 0.2);
+    --radius-md: 10px;
+    --radius-lg: 18px;
+    --font-brand: 'Caveat', cursive;
+    --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-fundo);
+    color: var(--bg-header);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+}
+
+button, input, textarea, select {
+    font: inherit;
+}
+
+.page-header {
+    background-color: var(--bg-header);
+    color: var(--bg-form);
+    padding: 1rem 6rem;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.page-header h1 {
+    font-weight: 700;
+    background: linear-gradient(to right, var(--bg-form), var(--cor-destaque));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: left;
+    font-family: var(--font-brand);
+    font-optical-sizing: auto;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.page-header p {
+    color: var(--cor-destaque);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.page-header a {
+    color: rgb(255, 255, 255);
+    font-size: 1rem;
+    text-align: right;
+    position: static;
+    text-decoration: none;
+}
+
+.page-header a:hover {
+    color: var(--cor-destaque-hover);
+}
+
+.page-main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem 1rem 3rem;
+    background-image: radial-gradient(var(--bg-header) 0.5px, transparent 0.5px), radial-gradient(var(--bg-header) 0.5px, var(--bg-fundo) 0.5px);
+    background-color: var(--bg-fundo);
+}
+
+.btn-voltar-pagina {
+    display: block;
+    margin: 1rem 1rem 0;
+}
+
+.comments-shell {
+    width: 100%;
+    max-width: 820px;
+    background-color: var(--bg-form);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 2rem;
+    animation: slideUpFade 0.6s ease forwards;
+    border: 1px solid rgba(43, 43, 43, 0.04);
+    margin-bottom: 2rem;
+}
+
+.comments-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--borda);
+}
+
+.comments-header > div {
+    grid-column: 2;
+    text-align: center;
+}
+
+.comments-header .btn-primary {
+    grid-column: 1;
+    justify-self: start;
+    color: var(--branco-btn);
+}
+
+.comments-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0.2rem;
+}
+
+.btn-topo {
+    min-width: 50px;
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    box-shadow: var(--shadow-md);
+}
+
+.comentario-nota {
+    color: var(--cor-destaque);
+}
+
+.comentarios-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.comentario-card {
+    background: var(--bg-card);
+    border: 1px solid var(--borda);
+    border-bottom: 3px solid var(--cor-destaque);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 1rem ;
+    overflow: hidden;
+}
+
+.comentario-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.comentario-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.comentario-user {
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.comentario-data {
+    color: var(--bg-header-mutado);
+    font-size: 0.8rem;
+}
+
+.comentario-texto {
+    color: var(--bg-header);
+    line-height: 1.5;
+    overflow-wrap: break-word;
+}
+
+.comentario-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0rem;
+}
+
+.comentario-acoes button {
+    border: 1px solid var(--borda);
+    background: #fff;
+    color: var(--bg-header);
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.comentario-acoes .btn-delete:hover {
+        background-color: #991b1b;
+    color: var(--branco-btn);
+}
+
+.comentario-acoes .btn-delete {
+    color: #991b1b;
+}
+
+.comentario-acoes .btn-alterar:hover {
+    background-color: var(--bg-header);
+    color: var(--branco-btn);
+}
+
+.comentario-acoes .btn-alterar {
+    color: var(--bg-header);
+}
+
+.composer {
+    position: sticky;
+    bottom: 1rem;
+    width: min(760px, 100%);
+    background: rgba(255, 253, 251, 0.96);
+    border: 1px solid var(--borda);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.composer-header h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.composer-row textarea,
+.input-group select {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    background-color: #F9FAFB;
+    color: var(--bg-header);
+}
+
+.composer-row textarea {
+    resize: none;
+}
+
+.composer-row textarea:focus,
+.input-group select:focus {
+    outline: none;
+    background-color: var(--bg-form);
+    border-color: var(--cor-destaque);
+    box-shadow: var(--shadow-focus);
+}
+
+.composer-actions {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+}
+
+
+.btn-primary {
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    font-family: var(--font-sans);
+}
+
+.btn-primary {
+    background-color: var(--cor-destaque);
+    color: var(--branco-btn);
+}
+
+.btn-primary:hover {
+    background-color: var(--cor-destaque-hover);
+    color: var(--bg-header);
+    box-shadow: var(--shadow-md), 0 4px 12px rgba(255, 122, 89, 0.2);
+}

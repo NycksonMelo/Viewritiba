@@ -22,15 +22,29 @@ $retorno = [
 if (isset($_GET['id'])) {
     $id = (int) $_GET['id'];
     $stmt = $conexao->prepare(
+
         "SELECT * FROM evento WHERE id = ? AND id_organizador = ?"
+=======
+        "SELECT * FROM evento WHERE id_evento = ?"
+
     );
     $stmt->bind_param("ii", $id, $id_organizador);
 } elseif (isset($_GET['titulo'])) {
     $titulo = "%" . $_GET['titulo'] . "%";
+
     $stmt = $conexao->prepare(
         "SELECT * FROM evento WHERE id_organizador = ? AND titulo LIKE ?"
     );
     $stmt->bind_param("is", $id_organizador, $titulo);
+=======
+     $stmt = $conexao->prepare(
+        "SELECT * FROM evento
+         WHERE titulo LIKE ?
+         OR descricao LIKE ?
+         OR local LIKE ?"
+    );
+    $stmt->bind_param("sss", $titulo, $titulo, $titulo);
+
 } else {
     $stmt = $conexao->prepare(
         "SELECT * FROM evento WHERE id_organizador = ?"
@@ -52,7 +66,7 @@ if ($resultado->num_rows > 0) {
 } else {
     $retorno = [
         'status' => 'nok',
-        'mensagem' => 'Não há registros',
+        'mensagem' => 'Nenhum evento encontrado.',
         'data' => []
     ];
 }

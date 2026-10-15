@@ -1,5 +1,4 @@
 <?php
-
 include_once('conexao.php');
 
 $retorno = [
@@ -8,14 +7,16 @@ $retorno = [
     'data' => []
 ];
 
+$email = trim($_POST['usuario'] ?? '');
+$senha = $_POST['senha'] ?? '';
+
 $stmt = $conexao->prepare(
-    "SELECT * FROM cliente WHERE usuario = ? AND senha = ?"
+    "SELECT * FROM usuario WHERE email = ? AND status_usuario = 'ativo'"
 );
 
 $stmt->bind_param(
-    "ss",
-    $_POST['usuario'],
-    $_POST['senha']
+    "s",
+    $email
 );
 
 $stmt->execute();
@@ -26,19 +27,37 @@ $tabela = [];
 
 if ($resultado->num_rows > 0) {
 
-    while ($linha = $resultado->fetch_assoc()) {
+    $linha = $resultado->fetch_assoc();
+    if (!password_verify($senha, $linha['senha'])) {
+        $linha = null;
+    }
+
+    if ($linha != null) {
+        unset($linha['senha']);
         $tabela[] = $linha;
     }
 
     session_start();
+    if (count($tabela) > 0) {
+        session_regenerate_id(true);
+        $_SESSION['usuario'] = $tabela;
+        $_SESSION['usuario_id'] = (int) $linha['id_usuario'];
+        $_SESSION['usuario_tipo'] = $linha['tipo_usuario'];
+    }
 
-    $_SESSION['usuario'] = $tabela;
-
-    $retorno = [
-        'status' => 'ok',
-        'mensagem' => 'Login realizado com sucesso.',
-        'data' => $tabela
-    ];
+    if (count($tabela) > 0) {
+        $retorno = [
+            'status' => 'ok',
+            'mensagem' => 'Login realizado com sucesso.',
+            'data' => $tabela
+        ];
+    } else {
+        $retorno = [
+            'status' => 'nok',
+            'mensagem' => 'Usuário ou senha incorretos.',
+            'data' => []
+        ];
+    }
 
 } else {
 
