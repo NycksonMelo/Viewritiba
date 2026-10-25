@@ -45,6 +45,6 @@ document.getElementById("formOrganizador").addEventListener("submit", async func
             alert("Erro: " + resposta.mensagem);
         }
     } catch (erro) {
-        alert("Não foi possível conectar ao servidor. Tente novamente mais tarde.");
+        alert(erro.message || "Não foi possível conectar ao servidor. Tente novamente mais tarde.");
     }
 });

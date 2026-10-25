@@ -10,6 +10,11 @@ document.getElementById("formLogin").addEventListener("submit", async function (
 		});
 		const resposta = await retorno.json();
 
+		if (resposta.status === "banido") {
+			window.location.replace(resposta.redirect);
+			return;
+		}
+
 		if (resposta.status === "sucesso") {
 			window.location.href = "../home/painel.html";
 			return;
@@ -17,6 +22,6 @@ document.getElementById("formLogin").addEventListener("submit", async function (
 
 		alert(resposta.mensagem);
 	} catch (erro) {
-		alert("Não foi possível realizar o login. Tente novamente.");
+		alert(erro.message || "Não foi possível realizar o login. Tente novamente.");
 	}
 });
