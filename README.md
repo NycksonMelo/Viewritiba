@@ -11,6 +11,7 @@ Plataforma web para divulgação, descoberta e gerenciamento de eventos presenci
   - [Módulo do Organizador](#módulo-do-organizador)
   - [Módulo de Eventos](#módulo-de-eventos)
   - [Módulo do Participante](#módulo-do-participante)
+  - [Módulo do Moderador](#módulo-do-moderador)
 - [Arquitetura de Diretórios](#arquitetura-de-diretórios)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Banco de Dados](#banco-de-dados)
@@ -39,12 +40,19 @@ O **Viewritiba** foi concebido para suprir a carência de um canal centralizado 
 
 ### Módulo de Eventos
 - **Criação de Eventos:** Cadastro com título, descrição detalhada, data/hora e localização física. Associação automática ao organizador logado na sessão ativa, dispensando inputs manuais de chave estrangeira.
-- **Listagem e Consulta:** Exibição dos eventos vinculados ao organizador autenticado e visualização detalhada de dados do evento.
+- **Catálogo Público:** Todos os eventos publicados ficam visíveis no catálogo, independentemente do organizador autenticado.
+- **Gestão privada:** O organizador autenticado consulta e gerencia somente os próprios eventos.
 - **Edição e Exclusão:** Atualização e remoção de registros respeitando a integridade relacional.
 
 ### Módulo do Participante
 - **Cadastro de Participantes:** Registro com validações de dados pessoais, e-mail e regras de complexidade de senha.
 - **Autenticação:** Login dedicado para participantes com validação em endpoints assíncronos.
+
+### Módulo do Moderador
+- **Login dedicado:** As credenciais privadas configuradas no ambiente do servidor são usadas exclusivamente na página de login do moderador, fora dos fluxos públicos de organizador e participante.
+- **Moderação de conteúdo e contas:** O painel privado permite excluir eventos e comentários, suspender organizadores e participantes com motivo escrito pelo moderador e remover suspensões.
+- **Aviso de suspensão:** Após autenticar, uma conta suspensa é encaminhada para uma página com o aviso padrão e o motivo informado pela moderação. Sessões existentes perdem acesso às rotas protegidas após a próxima requisição.
+- **Comentários persistentes:** Os comentários são armazenados no MySQL e ficam visíveis publicamente; publicar exige uma sessão de participante para que a suspensão de contas impeça novas publicações.
 
 ---
 
@@ -59,7 +67,7 @@ ViewRitiba/
 │   ├── php/                   # Endpoints de API e controle de sessão
 │   └── sql/                   # DDL da tabela organizador
 ├── crud_evento/               # Módulo de eventos
-│   ├── home/                  # Formulários de cadastro, edição e listagem
+│   ├── home/                  # Formulários, catálogo público e gestão de eventos
 │   ├── js/                    # Lógica de integração assíncrona
 │   ├── php/                   # Endpoints de persistência e consulta
 │   └── sql/                   # DDL da tabela evento
@@ -68,6 +76,7 @@ ViewRitiba/
 │   ├── js/                    # Scripts de formulários e login
 │   ├── php/                   # Endpoints da entidade participante
 │   └── css/                   # Estilização do módulo
+├── crud_admin/                # Autenticação interna e painel privado de moderação
 ├── css/                       # Folhas de estilo compartilhadas
 ├── documentos/                # Especificação de requisitos (BES) e documentação
 ├── index.html                 # Ponto de entrada (redirecionamento da aplicação)
@@ -119,7 +128,7 @@ CREATE TABLE IF NOT EXISTS evento (
   id_organizador INT NOT NULL,
   PRIMARY KEY (id),
   KEY idx_evento_organizador_data (id_organizador, data_hora),
-  CONSTRAINT fk_evento_organizador 
+  CONSTRAINT fk_evento_organizador
     FOREIGN KEY (id_organizador) REFERENCES organizador(id)
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -140,11 +149,15 @@ CREATE TABLE IF NOT EXISTS participante (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 
+#### Tabelas `comentario` e `conta_banimento`
+
+O script principal cria os comentários vinculados aos eventos. A tabela `comentario` possui exclusão em cascata quando o evento é removido. A tabela `conta_banimento` armazena tipo de conta, ID e motivo da suspensão; a chave composta impede duplicar o estado de banimento de uma conta. As credenciais do moderador não ficam no banco nem no repositório: o servidor usa `VIEWRITIBA_MODERATOR_USER` e `VIEWRITIBA_MODERATOR_PASSWORD_HASH`.
+Comentários que existiam somente no `localStorage` do navegador não são transferidos automaticamente para o banco.
+
 ### Ordem de Importação
 
-1. Execute o script `crud_organizador/sql/organizador.sql` (cria a base e a tabela de organizadores).
-2. Execute o script `crud_evento/sql/evento.sql` (cria a tabela de eventos associada).
-3. Caso utilize o módulo de participantes, crie a tabela `participante` conforme a DDL acima.
+1. Execute `crud_organizador/sql/organizador.sql` no phpMyAdmin. Esse script cria a base e as tabelas de organizadores, participantes, eventos, comentários e banimentos. Pode executá-lo novamente em uma base existente para criar a nova tabela sem apagar os registros.
+   - Execute novamente esse script na base atual antes de usar o painel de suspensão, para criar `conta_banimento`.
 
 ---
 
@@ -186,6 +199,17 @@ CREATE TABLE IF NOT EXISTS participante (
      ```
      http://localhost/ViewRitiba/
      ```
+   - Configure as variáveis do moderador no Apache, fora do repositório. No XAMPP, adicione ao arquivo `C:\xampp\apache\conf\extra\httpd-xampp.conf`:
+     ```apache
+     SetEnv VIEWRITIBA_MODERATOR_USER "seu-usuario-de-moderacao"
+     SetEnv VIEWRITIBA_MODERATOR_PASSWORD_HASH "COLE_AQUI_O_HASH_GERADO"
+     ```
+   - Gere o hash da senha no terminal com o PHP do XAMPP. O comando solicita a senha sem incluí-la no comando salvo:
+     ```powershell
+     & C:\xampp\php\php.exe -r "fwrite(STDERR, 'Senha: '); echo password_hash(trim(fgets(STDIN)), PASSWORD_DEFAULT), PHP_EOL;"
+     ```
+     Copie o hash produzido para `VIEWRITIBA_MODERATOR_PASSWORD_HASH` e reinicie o Apache.
+   - Para entrar como moderador, acesse diretamente `http://localhost/ViewRitiba/crud_admin/login.html` e informe o usuário e a senha configurados. Esse endereço não é divulgado nos menus ou páginas públicas. Os formulários de organizador e participante autenticam somente suas respectivas contas.
 
 ---
 
@@ -195,14 +219,19 @@ CREATE TABLE IF NOT EXISTS participante (
 | :--- | :--- |
 | `/index.html` | Redirecionamento principal para a landing page da aplicação. |
 | `/crud_organizador/home/MainMenu.html` | Página de boas-vindas com opções de login e cadastro. |
-| `/crud_organizador/login/login.html` | Formulário de autenticação do organizador. |
+| `/crud_organizador/login/Login.html` | Formulário de autenticação do organizador. |
 | `/crud_organizador/home/organizador_novo.html` | Formulário de criação de conta do organizador. |
 | `/crud_organizador/home/painel.html` | Dashboard principal (requer sessão ativa). |
 | `/crud_organizador/home/perfil_organizador.html` | Visualização pública e dados do organizador. |
 | `/crud_organizador/home/organizador_alterar.html` | Edição cadastral e alteração de senha. |
-| `/crud_evento/home/eventos.html` | Listagem dos eventos cadastrados. |
+| `/crud_evento/home/eventos.html` | Redirecionamento para o catálogo público de eventos. |
+| `/crud_evento/home/catalogo.html` | Catálogo público de eventos de todos os organizadores. |
 | `/crud_evento/home/evento_novo.html` | Cadastro de novos eventos. |
 | `/crud_evento/home/visualizar_evento.html` | Detalhes de um evento específico. |
+| `/crud_participante/login/login.html` | Login de participante. |
+| `/crud_admin/login.html` | Login privado do moderador; não é divulgado nos menus ou páginas públicas. |
+| `/crud_admin/painel.php` | Painel privado para excluir eventos/comentários e suspender ou reativar contas. |
+| `/crud_admin/conta_banida.php` | Explicação privada da suspensão, exibida após uma tentativa de login válida em uma conta banida. |
 
 ---
 
@@ -211,4 +240,5 @@ CREATE TABLE IF NOT EXISTS participante (
 - **Prevenção a SQL Injection:** Utilização de `mysqli::prepare()` e vinculação de parâmetros (`bind_param`) em todas as operações de escrita e leitura dinâmica.
 - **Armazenamento Seguro de Senhas:** Hashing obrigatório através de `password_hash($senha, PASSWORD_DEFAULT)` e conferência via `password_verify()`.
 - **Isolamento de Credenciais na Sessão:** A identificação do usuário em operações restritas (ex.: publicação de eventos) é resgatada da sessão segura no servidor (`$_SESSION['organizador_id']`), impedindo que o cliente forje o identificador de autor.
+- **Ações do moderador:** Exclusões exigem sessão de moderador válida, token CSRF e requisição `POST`; a interface não concede permissões por `localStorage`.
 - **Comunicação Padronizada:** Todas as rotas de backend enviam cabeçalho `Content-Type: application/json; charset=utf-8` com envelope estruturado (`status`, `mensagem`, `data`).

@@ -36,6 +36,8 @@ if (strlen($data_hora) === 16) {
 include_once('conexao.php');
 
 $id_organizador = (int) $_SESSION['organizador_id'];
+require_once __DIR__ . '/../../crud_admin/php/banimentos.php';
+exigir_conta_nao_banida($conexao, 'organizador', $id_organizador);
 $stmt = $conexao->prepare("
     INSERT INTO evento (titulo, descricao, data_hora, local, id_organizador)
     VALUES (?, ?, ?, ?, ?)

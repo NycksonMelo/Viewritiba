@@ -11,6 +11,10 @@ async function buscar(id){
     }
     const retorno = await fetch("../php/evento_get.php?id="+id);
     const resposta = await retorno.json();
+    if (resposta.status === "banido") {
+        window.location.replace(resposta.redirect);
+        return;
+    }
     if(resposta.status == "ok"){
         alert("SUCESSO:" + resposta.mensagem);
         var registro = resposta.data[0];
@@ -49,7 +53,11 @@ async function alterar(){
           body: fd  
         });
     const resposta = await retorno.json();
-    if(resposta.status == "ok"){
+        if (resposta.status === "banido") {
+            window.location.replace(resposta.redirect);
+            return;
+        }
+        if(resposta.status == "ok"){
         alert("SUCESSO: " + resposta.mensagem);
         window.location.href = '../home/'
     }else{

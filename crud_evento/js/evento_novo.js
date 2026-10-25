@@ -42,6 +42,11 @@ async function novo(){
 
     const resposta = await retorno.json();
 
+    if (resposta.status === "banido") {
+        window.location.replace(resposta.redirect);
+        return;
+    }
+
     if (retorno.status === 401) {
         window.location.href = "../../crud_organizador/login/Login.html";
         return;

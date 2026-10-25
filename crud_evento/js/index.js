@@ -12,7 +12,9 @@ document.getElementById("buscar").addEventListener("click", () => {
 async function buscar(){
     const retorno = await fetch("../php/evento_get.php");
     const resposta = await retorno.json();
-    if (retorno.status === 401) {
+    if (resposta.status === "banido") {
+        window.location.replace(resposta.redirect);
+    } else if (retorno.status === 401) {
         window.location.replace("../../crud_organizador/login/Login.html");
     } else if(resposta.status == "ok"){
         preencherTabela(resposta.data);    
@@ -50,7 +52,9 @@ async function pesquisar() {
         "../php/evento_get.php?titulo=" + encodeURIComponent(titulo)
     );
     const resposta = await retorno.json();
-    if (retorno.status === 401) {
+    if (resposta.status === "banido") {
+        window.location.replace(resposta.redirect);
+    } else if (retorno.status === 401) {
         window.location.replace("../../crud_organizador/login/Login.html");
     } else if (resposta.status == "ok") {
         preencherTabela(resposta.data);
@@ -93,7 +97,9 @@ async function excluir(id){
     }
     const retorno = await fetch("../php/evento_excluir.php?id=" + id);
     const resposta = await retorno.json();
-    if(resposta.status == "ok"){
+    if (resposta.status === "banido") {
+        window.location.replace(resposta.redirect);
+    } else if(resposta.status == "ok"){
         alert(resposta.mensagem);
         buscar();
     }else{
