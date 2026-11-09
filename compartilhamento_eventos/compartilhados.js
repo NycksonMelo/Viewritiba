@@ -49,7 +49,7 @@ function atualizarBotaoFavorito(botao, favoritado) {
  
     // Monta o card de UM evento recebido
     function montarCard(item) {
-        // troca o espaço por "T" para o navegador entender a data do MySQL
+        
         const data = new Date(item.data_hora.replace(' ', 'T'));
         const status = getStatusEvento(item.data_hora);
  
@@ -151,7 +151,7 @@ info.appendChild(acoes);
             const resp = await fetch('compartilhar_recebidos.php');
             const resultado = await resp.json();
  
-            // 401 = não logado, 500 = erro de banco: mostra a mensagem que o servidor mandou
+           
             if (!resp.ok || resultado.status !== 'ok') {
                 contador.textContent = 'Não foi possível carregar';
                 mostrarMensagem(resultado.mensagem || 'Erro ao carregar os eventos.', true);
