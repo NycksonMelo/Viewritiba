@@ -14,44 +14,57 @@
     overflow-x: auto;
 }
 
+/* Mesma largura de página da tela Eventos (.container do crud_evento/css/style.css) */
+.explorar-main {
+    width: min(1240px, calc(100% - 40px));
+}
+
+/* Lista com as mesmas medidas da lista de Eventos (#lista do crud_evento/css/style.css) */
 #lista-explorar table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 14px;
+    border-spacing: 0 13px;
 }
 
 #lista-explorar th {
-    padding: 0 18px 6px;
+    padding: 0 16px 9px;
     text-align: left;
-    color: #6b7280;
-    font-size: 0.78rem;
-    font-weight: 800;
+    white-space: nowrap;
+    color: #6d6565;
+    font-size: 11px;
+    font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 1px;
 }
 
 #lista-explorar td {
-    background: #fff;
-    padding: 20px 18px;
+    background: rgba(255, 255, 255, 0.94);
+    color: #393939;
+    padding: 22px 16px;
+    font-size: 13px;
     vertical-align: middle;
-    border-top: 1px solid #e4e4e4;
-    border-bottom: 1px solid #e4e4e4;
-    transition: all 0.2s ease;
+    border-top: 1px solid rgba(255, 255, 255, 0.90);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.90);
+    transition: background 0.25s ease;
 }
 
 #lista-explorar td:first-child {
-    border-left: 1px solid #e4e4e4;
-    border-radius: 14px 0 0 14px;
-    font-weight: 800;
+    color: #242424;
+    font-size: 14px;
+    font-weight: 850;
+    padding-left: 22px;
+    border-left: 1px solid rgba(255, 255, 255, 0.90);
+    border-radius: 16px 0 0 16px;
 }
 
 #lista-explorar td:last-child {
-    border-right: 1px solid #e4e4e4;
-    border-radius: 0 14px 14px 0;
+    min-width: 190px;
+    border-right: 1px solid rgba(255, 255, 255, 0.90);
+    border-radius: 0 16px 16px 0;
 }
 
 #lista-explorar tr:hover td {
-    background: #fff9f6;
+    background: #fff8f5;
 }
 
 #mensagem_explorar {
@@ -74,7 +87,7 @@
 /* Fundos dos botões com transparência: acompanham a cor do card (normal ou favoritado) */
 #lista-explorar a[href*="comentarios"] {
     background: rgba(55, 65, 81, 0.07);
-    color: #374151;
+    color: #2563eb;
 }
 
 #lista-explorar a[href*="comentarios"]:hover {
@@ -90,13 +103,14 @@
     background: rgba(233, 95, 71, 0.18);
 }
 
+/* Detalhes: mesmo coral do botão Detalhes da lista de eventos */
 #lista-explorar a[href*="visualizar_evento"] {
-    background: rgba(37, 99, 235, 0.08);
-    color: #2563eb;
+    background: rgba(233, 95, 71, 0.10);
+    color: #9e321c;
 }
 
 #lista-explorar a[href*="visualizar_evento"]:hover {
-    background: rgba(37, 99, 235, 0.15);
+    background: rgba(233, 95, 71, 0.18);
 }
 
 /* Eventos já favoritados: card pêssego, no tom do card de filtro da tela Eventos */
@@ -116,4 +130,71 @@
 
 #lista-explorar tr.favoritado:hover td {
     background: #ffded1;
+}
+
+/* Cabeçalho de Recomendados: com recomendações, só o texto e o link "Ver todos os eventos";
+   sem recomendações, o card "Explorar eventos" aparece embaixo do texto */
+
+.explorar-topo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 1.5rem;
+}
+
+.explorar-topo [hidden] {
+    display: none !important;
+}
+
+.explorar-link-todos {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.75rem;
+    color: #c64d32;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.explorar-link-todos:hover {
+    text-decoration: underline;
+}
+
+.explorar-topo .panel-welcome {
+    max-width: none;
+    margin-bottom: 0;
+}
+
+/* Sem recomendações: o card desce para baixo do texto, alinhado à esquerda com ele... */
+
+.explorar-topo.sem-recomendacao {
+    grid-template-columns: auto;
+    gap: 1.75rem;
+    width: fit-content; /* largura = trecho onde há texto no cabeçalho */
+    max-width: 100%;
+}
+
+/* ...com altura padrão e 2/3 da largura do texto do cabeçalho */
+
+.explorar-topo.sem-recomendacao .panel-card {
+    justify-self: start;
+    width: 66.667%; /* 2/3 da largura do texto do cabeçalho */
+    min-width: 260px;
+}
+
+
+/* Botões de ação só com ícone (Comentários, Favoritar, Visualizar) */
+#lista-explorar a.btn-icone {
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+    padding: 0;
+    margin: 3px 2px;
+    vertical-align: middle;
+}
+
+#lista-explorar .btn-icone svg {
+    display: block;
+    flex: none;
 }

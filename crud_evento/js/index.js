@@ -1,3 +1,5 @@
+let comboFiltro = null;
+
 document.addEventListener("DOMContentLoaded", () => {
     buscar();
 });
@@ -6,7 +8,8 @@ document.getElementById("novo").addEventListener("click", () => {
     window.location.href = "evento_novo.html";
 });
 
-document.getElementById("logoff").addEventListener("click", () => {
+document.getElementById("logoff").addEventListener("click", (evento) => {
+    evento.preventDefault();
     logoff();
 });
 
@@ -25,7 +28,7 @@ document.getElementById("pesquisa").addEventListener("keydown", (evento) => {
 document.getElementById("filtro_apagar").addEventListener("click", () => {
     document.getElementById("pesquisa").value = "";
     document.getElementById("filtro_data").value = "";
-    document.getElementById("filtro_categoria").value = "";
+    if (comboFiltro) comboFiltro.limpar();
     buscar();
 });
 
@@ -39,17 +42,20 @@ async function logoff() {
 }
 
 async function buscar() {
-    const retornoCategorias = await fetch("../php/categoria_get.php");
-    const categorias = await retornoCategorias.json();
+    let categorias = { status: "erro", data: [] };
+    try {
+        const retornoCategorias = await fetch("../php/categoria_get.php");
+        categorias = await retornoCategorias.json();
+    } catch (erro) {
+        console.error("Erro ao carregar categorias:", erro);
+    }
 
-    if (categorias.status == "ok") {
-        var html = `<option value="">Todas as categorias</option>`;
-
-        for (var i = 0; i < categorias.data.length; i++) {
-            html += `<option value="${categorias.data[i].id_categoria}">${categorias.data[i].nome_categoria}</option>`;
-        }
-
-        document.getElementById("filtro_categoria").innerHTML = html;
+    if (comboFiltro == null) {
+        comboFiltro = new ComboCategorias(
+            document.getElementById("filtro_categorias"),
+            categorias.status == "ok" ? categorias.data : [],
+            { placeholder: "Todas as categorias", unica: true }
+        );
     }
 
     const retorno = await fetch("../php/evento_get.php");
@@ -74,7 +80,7 @@ async function buscar() {
 async function pesquisar() {
     const titulo = document.getElementById("pesquisa").value.trim();
     const data = document.getElementById("filtro_data").value;
-    const categoria = document.getElementById("filtro_categoria").value;
+    const categoria = comboFiltro ? comboFiltro.valores().join(",") : "";
 
     const parametros = new URLSearchParams();
 
@@ -142,22 +148,7 @@ async function excluir(id) {
         alert(resposta.mensagem);
     }
 }
-let eventosGerenciados = [];
-
-function abrirCompartilhamentoOrganizador(indice) {
-    const evento = eventosGerenciados[indice];
-
-    if (!evento || typeof compartilharEvento !== "function") return;
-
-    compartilharEvento({
-        id_evento: evento.id,
-        titulo: evento.titulo,
-        local: evento.local
-    });
-}
-
 function preencherTabela(tabela) {
-    eventosGerenciados = tabela;
     var html = `
         <table>
             <tr>
@@ -173,30 +164,26 @@ function preencherTabela(tabela) {
     for (var i = 0; i < tabela.length; i++) {
         html += `
             <tr>
-                <td>${tabela[i].titulo}</td>
+                <td>${marcadorLink(tabela[i])}${tabela[i].titulo}</td>
                 <td>${tabela[i].descricao}</td>
                 <td>${tabela[i].data_hora}</td>
                 <td>${tabela[i].local}</td>
                 <td>${tabela[i].categorias}</td>
 
                 <td>
-
-                    <button type="button"
-                    class="btn-compartilhar"
-                    onclick="abrirCompartilhamentoOrganizador(${i})">
-                    Compartilhar
-                    </button>
-                    <a href="../../crud_comentarios/home/comentarios.html?id=${tabela[i].id}">
-                        Comentários
+                    <a class="btn-icone" title="Detalhes" aria-label="Detalhes"
+                        href="visualizar_evento.html?id=${tabela[i].id}">
+                        ${icone("info")}
                     </a>
 
-                    <a href="evento_alterar.html?id=${tabela[i].id}">
-                        Alterar
+                    <a class="btn-icone" title="Alterar" aria-label="Alterar"
+                        href="evento_alterar.html?id=${tabela[i].id}">
+                        ${icone("editar")}
                     </a>
 
-                    <a href="#"
+                    <a class="btn-icone" title="Excluir" aria-label="Excluir" href="#"
                         onclick="excluir(${tabela[i].id}); return false;">
-                        Excluir
+                        ${icone("excluir")}
                     </a>
                 </td>
             </tr>

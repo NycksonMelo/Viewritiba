@@ -45,7 +45,7 @@ if (mb_strlen($mensagem, 'UTF-8') > 200) {
 try {
     
     $stmt = $conexao->prepare(
-        'SELECT id_evento FROM evento WHERE id_evento = ?'
+        'SELECT id FROM evento WHERE id = ?'
     );
     $stmt->bind_param('i', $id_evento);
     $stmt->execute();

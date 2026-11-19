@@ -126,7 +126,7 @@ function compartilharEvento(evento) {
     box.appendChild(btnFechar);
  
     overlay.appendChild(box);
-    document.body.appendChild(overlay);
+    (document.querySelector('dialog[open]') || document.body).appendChild(overlay);
 }
  
 

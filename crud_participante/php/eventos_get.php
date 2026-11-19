@@ -44,7 +44,8 @@ $sql = "SELECT evento.*,
         LEFT JOIN organizador
             ON organizador.id = evento.id_organizador";
 
-$filtros = [];
+// Só eventos que ainda não aconteceram (mesma regra dos Recomendados)
+$filtros = ['evento.data_hora >= NOW()'];
 $parametros = [$id_participante];
 $tipos = "i";
 
@@ -64,20 +65,34 @@ if (isset($_GET['titulo']) && trim($_GET['titulo']) !== '') {
 }
 
 if (isset($_GET['categoria']) && trim($_GET['categoria']) !== '') {
+    // "categoria" aceita um id ou uma lista separada por vírgula (ex.: 1,3).
+    $categorias = array_values(array_unique(array_filter(
+        array_map('intval', explode(',', (string) $_GET['categoria']))
+    )));
+    if (!$categorias) {
+        $categorias = [0];
+    }
+
     $filtros[] = "EXISTS (
         SELECT 1
         FROM evento_categoria
         WHERE evento_categoria.id_evento = evento.id
-          AND evento_categoria.id_categoria = ?
+          AND evento_categoria.id_categoria IN ("
+        . implode(',', array_fill(0, count($categorias), '?')) . ")
     )";
 
-    $parametros[] = (int) $_GET['categoria'];
-    $tipos .= "i";
+    foreach ($categorias as $id_categoria) {
+        $parametros[] = $id_categoria;
+        $tipos .= "i";
+    }
 }
 
 if ($filtros) {
     $sql .= " WHERE " . implode(" AND ", $filtros);
 }
+
+// Do mais próximo ao mais distante
+$sql .= " ORDER BY evento.data_hora ASC";
 
 $stmt = $conexao->prepare($sql);
 

@@ -15,14 +15,17 @@ async function carregarFavoritos() {
 
     if (resultado.status === 'ok') {
         resultado.data.forEach(evento => {
-            idsFavoritados.add(Number(evento.id_evento));
+            idsFavoritados.add(Number(evento.id));
         });
     } else if (resultado.mensagem !== 'Nenhum favorito encontrado') {
         throw new Error(resultado.mensagem || 'Erro ao consultar favoritos');
     }
 }
 function atualizarBotaoFavorito(botao, favoritado) {
-    botao.textContent = favoritado ? '♥ Favoritado' : '♡ Favoritar';
+    const nome = favoritado ? 'Remover dos favoritos' : 'Favoritar';
+    botao.innerHTML = icone(favoritado ? 'desfavoritar' : 'favoritar', 18);
+    botao.title = nome;
+    botao.setAttribute('aria-label', nome);
     botao.classList.toggle('favoritado', favoritado);
     botao.setAttribute('aria-pressed', String(favoritado));
 }
@@ -79,7 +82,10 @@ info.appendChild(badge);
  
         const acoes = criar('div', 'acoes-evento');
 
-const ver = criar('a', 'btn-ver-evento', 'Ver evento');
+const ver = criar('a', 'btn-ver-evento');
+ver.innerHTML = icone('info');
+ver.title = 'Detalhes';
+ver.setAttribute('aria-label', 'Detalhes');
 ver.href = montarLink(item);
 
 const favoritar = criar('button', 'btn-favoritar');
@@ -102,7 +108,7 @@ favoritar.addEventListener('click', async () => {
         : '../favoritos/favoritos_add.php';
 
     favoritar.disabled = true;
-    favoritar.textContent = jaFavoritado ? 'Removendo...' : 'Salvando...';
+    favoritar.title = jaFavoritado ? 'Removendo...' : 'Salvando...';
 
     try {
         const resposta = await fetch(endpoint, {

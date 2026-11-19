@@ -26,13 +26,14 @@ $stmt = $conexao->prepare(
             (SELECT GROUP_CONCAT(nome_categoria ORDER BY nome_categoria SEPARATOR ', ')
                FROM evento_categoria
               INNER JOIN categoria ON categoria.id_categoria = evento_categoria.id_categoria
-              WHERE id_evento = evento.id_evento) AS categorias,
+              WHERE id_evento = evento.id) AS categorias,
             (SELECT COUNT(*) FROM favorito
-              WHERE id_evento = evento.id_evento AND tipo_conta = 'participante'
-                AND id_usuario = ?) AS favoritado
+              WHERE id_evento = evento.id AND tipo_conta = 'participante'
+                AND id_usuario = ?) AS favoritado,
+            (evento.data_hora < NOW()) AS encerrado
      FROM evento
      LEFT JOIN organizador ON organizador.id = evento.id_organizador
-     WHERE evento.id_evento = ?"
+     WHERE evento.id = ?"
 );
 $stmt->bind_param("ii", $id_participante, $id);
 $stmt->execute();
@@ -42,7 +43,9 @@ $conexao->close();
 
 if ($linha) {
     $linha['favoritado'] = $linha['favoritado'] > 0;
-    $linha['pode_favoritar'] = $id_participante > 0;
+    $linha['encerrado'] = (int) $linha['encerrado'] === 1;
+    // Evento que já aconteceu não pode ser favoritado nem desfavoritado
+    $linha['pode_favoritar'] = $id_participante > 0 && !$linha['encerrado'];
     $retorno = [
         'status' => 'ok',
         'mensagem' => 'Sucesso, consulta efetuada.',

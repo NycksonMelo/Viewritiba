@@ -4,9 +4,9 @@ header("Content-Type: application/json; charset=utf-8");
 require_once "conexao.php";
 
 $resultado = $conexao->query(
-    "SELECT DISTINCT categoria AS nome_categoria, categoria AS id_categoria
-       FROM evento_categoria
-      ORDER BY categoria"
+    "SELECT id_categoria, nome_categoria
+       FROM categoria
+      ORDER BY nome_categoria"
 );
 
 if (!$resultado) {
