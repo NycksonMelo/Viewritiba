@@ -35,7 +35,7 @@ if(!$id_evento){
     responder('nok', 'Evento não encontrado.');
 }
 
-$stmt_evento = $conexao->prepare("SELECT id FROM evento WHERE id = ?");
+$stmt_evento = $conexao->prepare("SELECT id, data_hora > NOW() AS futuro FROM evento WHERE id = ?");
 if(!$stmt_evento){
     responder('nok', 'Erro ao consultar evento: ' . $conexao->error);
 }
@@ -47,7 +47,11 @@ if($resultado_evento->num_rows === 0){
     $stmt_evento->close();
     responder('nok', 'Evento não encontrado.');
 }
+$evento_comentado = $resultado_evento->fetch_assoc();
 $stmt_evento->close();
+if((int) $evento_comentado['futuro'] === 1){
+    responder('nok', 'Só é possível comentar depois que o evento acontecer.');
+}
 
 $stmt = $conexao->prepare(
     "INSERT INTO avaliacao_comentario (texto, nota, data_criacao, tipo_conta, id_usuario, id_evento)

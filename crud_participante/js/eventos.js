@@ -209,11 +209,6 @@ function preencherTabela(tabela) {
                 <td>${escaparHtml(evento.categorias)}</td>
 
                 <td>
-                    <a class="btn-icone" title="Comentários" aria-label="Comentários"
-                        href="../../crud_comentarios/home/comentarios.html?id=${encodeURIComponent(idEvento)}">
-                        ${icone("comentarios")}
-                    </a>
-
                     <a class="btn-detalhes btn-icone" title="Detalhes" aria-label="Detalhes"
                         href="../../crud_evento/home/visualizar_evento.html?id=${encodeURIComponent(idEvento)}">
                         ${icone("info")}

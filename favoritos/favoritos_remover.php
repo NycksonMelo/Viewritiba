@@ -18,7 +18,7 @@ $id_usuario = $usuario['id'];
 $id_evento = (int) ($_POST['evento_id'] ?? 0);
 
 // Evento que já aconteceu não pode ser desfavoritado
-$stmt = $conexao->prepare("SELECT data_hora < NOW() AS encerrado FROM evento WHERE id_evento = ?");
+$stmt = $conexao->prepare("SELECT data_hora < NOW() AS encerrado FROM evento WHERE id = ?");
 $stmt->bind_param("i", $id_evento);
 $stmt->execute();
 $evento = $stmt->get_result()->fetch_assoc();

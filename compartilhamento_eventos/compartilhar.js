@@ -1,15 +1,9 @@
 
-const BASES = ['/viewritiba/Viewritiba', '/viewritiba'];
-
-let BASE_PROJETO = location.origin + BASES[BASES.length - 1];
-const pagina = location.pathname.toLowerCase();
-
-for (const base of BASES) {
-    if (pagina.startsWith(base.toLowerCase() + '/')) {
-        BASE_PROJETO = location.origin + base;
-        break;
-    }
-}
+// Descobre o prefixo do projeto a partir da URL atual: tudo que vem antes da
+// primeira pasta de módulo. Funciona na raiz (php -S) e em subpasta (XAMPP/Apache).
+const MODULOS = /\/(compartilhamento_eventos|crud_[a-z]+|favoritos|php|css)(\/|$)/i;
+const achado = location.pathname.match(MODULOS);
+const BASE_PROJETO = location.origin + (achado ? location.pathname.slice(0, achado.index) : '');
 
 const URL_DETALHE = BASE_PROJETO + '/crud_evento/home/visualizar_evento.html';
 

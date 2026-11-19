@@ -1,12 +1,13 @@
 <?php
 
-$servidor = 'localhost';
+$servidor = '127.0.0.1';
+$porta = 3310;
 $usuario = 'root';
 $senha = '';
 $banco = 'viewritiba';
 
 mysqli_report(MYSQLI_REPORT_OFF);
-$conexao = new mysqli($servidor, $usuario, $senha, $banco);
+$conexao = new mysqli($servidor, $usuario, $senha, $banco, $porta);
 
 if ($conexao->connect_error) {
     error_log("Erro de conexão com o banco de dados de participantes: " . $conexao->connect_error);

@@ -67,11 +67,6 @@ function preencherTabela(tabela) {
                 <td>${dados(tabela[i].organizador)}</td>
                 <td>${tabela[i].nota_media == null ? "-" : dados(tabela[i].nota_media) + "★"}</td>
                 <td>
-                    <a class="btn-icone" title="Comentários" aria-label="Comentários"
-                        href="../../crud_comentarios/home/comentarios.html?id=${tabela[i].id}">
-                        ${icone("comentarios")}
-                    </a>
-
                     <a class="btn-detalhes btn-icone" title="Detalhes" aria-label="Detalhes"
                         href="../../crud_evento/home/visualizar_evento.html?id=${tabela[i].id}">
                         ${icone("info")}

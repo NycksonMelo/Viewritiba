@@ -34,7 +34,7 @@ require_once __DIR__ . '/conexao.php';
 require_once __DIR__ . '/../../crud_admin/php/banimentos.php';
 exigir_conta_nao_banida($conexao, 'participante', (int) $_SESSION['participante_id']);
 
-$stmt_evento = $conexao->prepare('SELECT id FROM evento WHERE id = ?');
+$stmt_evento = $conexao->prepare('SELECT id, data_hora > NOW() AS futuro FROM evento WHERE id = ?');
 $stmt_evento->bind_param('i', $id_evento);
 $stmt_evento->execute();
 $evento = $stmt_evento->get_result()->fetch_assoc();
@@ -43,6 +43,13 @@ $stmt_evento->close();
 if (!$evento) {
     http_response_code(404);
     echo json_encode(['status' => 'erro', 'mensagem' => 'Evento não encontrado.']);
+    $conexao->close();
+    exit;
+}
+
+if ((int) $evento['futuro'] === 1) {
+    http_response_code(403);
+    echo json_encode(['status' => 'erro', 'mensagem' => 'Só é possível comentar depois que o evento acontecer.']);
     $conexao->close();
     exit;
 }

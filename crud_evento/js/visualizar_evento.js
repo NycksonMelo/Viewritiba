@@ -75,6 +75,8 @@ function preencherDetalhes(evento) {
     document.getElementById("detalhes-categorias").textContent = evento.categorias ?? "Não informadas.";
     document.getElementById("detalhes-comentarios").href =
         "../../crud_comentarios/home/comentarios.html?id=" + evento.id;
+    // Comentários só existem depois que o evento aconteceu
+    document.getElementById("detalhes-comentarios").style.display = evento.encerrado ? "" : "none";
 
     const visitar = document.getElementById("detalhes-visitar");
     if (/^https?:\/\//i.test(evento.link || "")) {
